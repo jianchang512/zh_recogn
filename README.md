@@ -32,7 +32,7 @@
 
 ## 在 pyvideotrans项目中使用
 
-首先升级 pyvideotrans 到v1.62+，然后左上角设置菜单-zh_recogn中文语音识别菜单点开，填写地址和端口，默认 "http://127.0.0.1:9933", 默认不要加`/api`
+首先升级 [pyvideotrans](https://github.com/jianchang512/pyvideotrans)   到v1.62+，然后左上角设置菜单-zh_recogn中文语音识别菜单点开，填写地址和端口，默认 "http://127.0.0.1:9933", 默认不要加`/api`
 
 
 ## API 
