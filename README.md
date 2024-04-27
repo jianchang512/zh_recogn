@@ -37,7 +37,7 @@
 
 ## API 
 
-api地址 http://ip:prot/api,默认 `http://127.0.0.1:9933/api`
+api地址 http://ip:prot/api  默认 `http://127.0.0.1:9933/api`
 
 python代码示例
 
