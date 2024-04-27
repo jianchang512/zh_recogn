@@ -1,31 +1,34 @@
 # zh_recogn中文语音识别
 
+>
 > 这是一个中文语音识别为字幕的项目，基于魔塔社区Paraformer模型。
 > 支持中文音频、中文视频转为srt字幕。
 >
 > 该项目仅支持中文语音识别。对于非中文语音，您可以利用基于 OpenAI Whisper 和 Faster-Whisper 的项目，如 [pyvideotrans](https://github.com/jianchang512/pyvideotrans) 或 [stt](https://github.com/jianchang512/stt) 来进行识别，目的是为了弥补国外模型在中文支持方面的不足。
-
+> 
 
 ## 源码部署
 
 1. 首先安装 python3.10/安装 [git](https://git-scm.com/downloads) ,安装ffmpeg，windows上 下载ffmpeg.exe后放到本项目的ffmpeg文件夹内，mac使用 `brew install ffmpeg`安装
-2. 创建个空英文目录，该目录下打开cmd，执行 `git clone  https://github.com/jianchang512/zh_recogn ./`
-3. cmd执行 `python -m venv venv`，然后windows中执行 `.\venv\scripts\activate`，macos和Linux中执行 `source ./venv/bin/activate`
+
+2. 创建个空英文目录，window上在该目录下打开cmd(Macos和Linux使用终端)，执行命令 `git clone  https://github.com/jianchang512/zh_recogn ./`
+
+3. 继续执行 `python -m venv venv`，然后Windows中执行 `.\venv\scripts\activate`，Macos和Linux中执行 `source ./venv/bin/activate`
+
 4. 继续执行 `pip install -r requirements.txt --no-deps`
-5. 如需cuda执行，在配置好cuda环境后， `pip uninstall torch torchaudio`, windows和linux下执行`pip install torch  torchaudio --index-url https://download.pytorch.org/whl/cu118`
+
+5. Windows和Linux如需cuda加速，继续执行， `pip uninstall torch torchaudio`, 再执行`pip install torch  torchaudio --index-url https://download.pytorch.org/whl/cu118`
+
 6. 启动项目 `python start.py`
 
 
 ## 预打包版/仅win10 win11
 
-下载后解压到英文目录，双击 start.exe
+1. 下载后解压到英文目录，双击 start.exe
+
+2. 为减小打包体积，预打包版不支持CUDA，若需cuda加速，请源码部署
 
 
-## 注意事项
-
-1. 第一次使用将自动下载模型，用时会较长
-2. 仅支持中文语音识别
-3. set.ini文件中可修改绑定地址和端口
 
 ## 在 pyvideotrans项目中使用
 
@@ -48,3 +51,10 @@ print(res.data)
 ```
 
 在 pyvideotrans 中填写时不要末尾添加 `/api`
+
+
+## 注意事项
+
+1. 第一次使用将自动下载模型，用时会较长
+2. 仅支持中文语音识别
+3. set.ini文件中可修改绑定地址和端口

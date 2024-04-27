@@ -21,8 +21,8 @@ def parse_ini():
 sets = parse_ini()
 web_address = sets.get('web_address')
 
-STATIC_DIR = os.path.join(ROOT_DIR, 'static')
-TMP_DIR = os.path.join(STATIC_DIR, 'tmp')
+STATIC_DIR = os.path.join(ROOT_DIR, 'static').replace('\\', '/')
+TMP_DIR = os.path.join(STATIC_DIR, 'tmp').replace('\\', '/')
 
 if not os.path.exists(TMP_DIR):
     os.makedirs(TMP_DIR, 0o777, exist_ok=True)

@@ -11,7 +11,7 @@ from waitress import serve
 import lib
 from lib import cfg, tool
 from lib.cfg import ROOT_DIR
-
+print('开始启动...')
 # 配置日志
 # 禁用 Werkzeug 默认的日志处理器
 log = logging.getLogger('werkzeug')
@@ -110,6 +110,7 @@ if __name__ == '__main__':
         host = cfg.web_address.split(':')
         print(f'url=http://{cfg.web_address}')
         threading.Thread(target=tool.openweb, args=(cfg.web_address,)).start()
+        print('启动成功')
         serve(app, host=host[0], port=int(host[1]))
     except Exception as e:
         print("error:" + str(e))
