@@ -39,14 +39,30 @@
 
 api地址 http://ip:prot/api  默认 `http://127.0.0.1:9933/api`
 
-python代码示例
+python代码请求api示例
 
 ```
+import requests
+
 audio_file="D:/audio/1.wav"
 file={"audio":open(audio_file,'rb')}
 res=requests.post("http://127.0.0.1:9933/api",files=file,timeout=1800)
 
 print(res.data)
+
+[
+	{
+	 line:1,
+	 time:"00:00:01,100 --> 00:00:03,300",
+	 text:"字幕内容1"
+	},
+	{
+	 line:2,
+	 time:"00:00:04,100 --> 00:00:06,300",
+	 text:"字幕内容2"
+	},
+]
+
 
 ```
 
