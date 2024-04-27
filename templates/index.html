@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>中文语音识别-zh_recogn</title>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="/static/layui/css/layui.css" rel="stylesheet"/>
+    <style>
+
+
+        .flex {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+            margin-left: 200px;
+        }
+
+        .flex-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .my-1 {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .p-2 {
+            padding: 15px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        #upload {
+            display: block;
+            margin-bottom: 10px;
+            border-style: solid;
+            padding: 50px 30px;
+        }
+
+        .layui-form {
+            margin: 15px auto;
+        }
+
+
+        #content {
+            width: 80%;
+            min-width: 800px;
+            max-width: 1400px;
+            margin: 75px auto 50px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header layui-bg-green">
+        <div
+                class="layui-logo layui-hide-xs"
+                style="color: #fff;width:auto"
+        >中文语音识别 zh_recogn {{ version }}
+        </div>
+        <!-- 头部区域（可配合layui 已有的水平导航） -->
+        <ul class="layui-nav layui-layout-right">
+            <!-- 移动端显示 -->
+            <li id="checkupdate" class="layui-nav-item layui-hide">
+                <a
+                        href="https://github.com/jianchang512/sts/releases"
+                        class="layui-font-red"
+                        target="_blank"
+                ></a>
+            </li>
+            <li class="layui-nav-item layui-hide-xs">
+                <a href="https://github.com/jianchang512/zh_recogn" target="_blank"
+                >Github</a
+                >
+            </li>
+        </ul>
+    </div>
+    <div id="content">
+        <div class="layui-margin-1 layui-font-14 layui-font-gray">
+            基于魔塔社区 FunASR paraformer-zh 模型,仅支持中文, 若需多语言识别请查看 <a href="https://github.com/jianchang512/pyvideotrans" target="_blank">pyVideoTrans</a> 或 <a href="https://github.com/jianchang512/stt" target="_blank">stt</a>
+        </div>
+        <!-- 内容主体区域 -->
+        <div class="layui-upload-drag layui-border-green" id="upload">
+            <i class="layui-icon layui-icon-upload layui-font-green"></i>
+            <div
+            >点击上传或拖拽<strong>中文发音</strong>的音视频文件拖拽到此处(wav,mp3,flac,mp4,mov,mkv,avi,mpeg)
+            </div>
+            <div class="layui-hide my-1" id="preview">
+                <div class="preview-scroll"></div>
+            </div>
+        </div>
+        <form class="layui-form text-center">
+            <div class="layui-form-item layui-form-block">
+                <input type="hidden" id="wav_name" name="wav_name"/>
+                <button
+                        type="submit"
+                        class="layui-btn layui-btn-danger"
+                        lay-submit
+                        lay-filter="submit"
+                        id="submit-btn"
+                >
+                    <i
+                            style="display: none"
+                            class="layui-icon-loading layui-icon layui-anim layui-anim-rotate layui-anim-loop"
+                    ></i>立即识别
+                </button>
+                <div
+                        class="layui-btn layui-btn-disabled"
+                        id="export-btn"
+                >导出字幕
+                </div>
+            </div>
+
+        </form>
+
+        <div class="layui-card">
+            <div id="showtips" class="layui-hide layui-padding-1 layui-margin-1"></div>
+            <div class="layui-card-body text-contain" style="padding: 10px 0">
+            <textarea
+                    placeholder="识别结果在此显示"
+                    class="layui-textarea"
+                    id="result"
+                    readonly
+                    cols="30"
+                    rows="10"
+            ></textarea>
+            </div>
+        </div>
+        <div class="layui-margin-1 text-center layui-font-gray">若要在 <a href="https://pyvideotrans.com"
+                                                                           target="_blank">pyVideoTrans</a> 中使用，请将
+                <code>http://{{web_address}}</code> 填写在 "菜单-设置-zh_recogn中"
+            </div>
+    </div>
+</div>
+
+<script src="/static/layui/layui.js"></script>
+<script>
+    window.$ = layui.$;
+    /** 即将要处理的文件信息 */
+
+    //JS
+    layui.use(function () {
+        var layer = layui.layer;
+
+        var upload = layui.upload;
+        // 渲染
+        let layindex1 = null;
+        upload.render({
+            headers: {timeout: 3600000},
+            elem: "#upload",
+            field: "audio",
+            accept: "file",
+            exts: "mp4|mp3|flac|wav|avi|mkv|mpeg|mov",
+            multiple: true,
+            url: "/api", // 实际使用时改成您自己的上传接口即可。
+            choose: function () {
+                $('#showtips').removeClass('layui-hide').text('识别用时可能较久，请耐心等待...')
+                layindex1 = layer.load();
+                $('#export-btn').addClass('layui-btn-disabled')
+            },
+            done: function (res) {
+                $('#showtips').text('识别完成')
+                layer.close(layindex1);
+                if (res.code !== 0) {
+                    layer.alert("识别出错:" + (res && res.msg ? res.msg : ""), {title: false})
+                    return false;
+                }
+                let txt = [];
+                res.data.forEach(it => {
+                    txt.push(`${it['line']}\n${it['time']}\n${it['text']}`)
+                })
+                $('#result').val(txt.join("\n\n"));
+                $('#export-btn').removeClass('layui-btn-disabled')
+            }
+        });
+        $("#export-btn").click(function () {
+            if ($(this).hasClass("layui-btn-disabled")) {
+                return;
+            }
+            var str = $("#result").val().trim();
+            if (!str) {
+                layer.alert("请先识别后再进行导出!",
+                    {title: false}
+                );
+                return;
+            }
+            layer.msg('开始导出请稍等...');
+            var blob = new Blob([str], {
+                type: 'text/plain'
+            })
+            var url = URL.createObjectURL(blob)
+            var aEl = document.createElement('a')
+            aEl.href = url
+            aEl.target = '_blank'
+            aEl.download = '语音识别结果.srt'
+            aEl.click()
+            aEl.remove()
+            URL.revokeObjectURL(url)
+        });
+    });
+
+</script>
+</body>
+</html>
