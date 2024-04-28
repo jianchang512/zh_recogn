@@ -24,6 +24,8 @@
 
 ## 预打包版/仅win10 win11
 
+下载地址 https://github.com/jianchang512/zh_recogn/releases
+
 1. 下载后解压到英文目录，双击 start.exe
 
 2. 为减小打包体积，预打包版不支持CUDA，若需cuda加速，请源码部署
