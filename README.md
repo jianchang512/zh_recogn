@@ -2,10 +2,11 @@
 
 >
 > 这是一个中文语音识别为字幕的项目，基于魔塔社区Paraformer模型。
-> 支持中文音频、中文视频转为srt字幕。
+> 支持中文音频、中文视频转为srt字幕。提供 api 接口和简单界面
 >
 > 该项目仅支持中文语音识别。对于非中文语音，您可以利用基于 OpenAI Whisper 和 Faster-Whisper 的项目，如 [pyvideotrans](https://github.com/jianchang512/pyvideotrans) 或 [stt](https://github.com/jianchang512/stt) 来进行识别，目的是为了弥补国外模型在中文支持方面的不足。
 > 
+
 
 ## 源码部署
 
@@ -69,6 +70,10 @@ print(res.data)
 ```
 
 在 pyvideotrans 中填写时不要末尾添加 `/api`
+
+
+## web界面
+![image](https://github.com/jianchang512/zh_recogn/assets/3378335/86305245-c206-4507-afb8-90193dd27bd1)
 
 
 ## 注意事项
