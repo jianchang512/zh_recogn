@@ -2,6 +2,7 @@ from funasr import AutoModel
 from flask import Flask, request, render_template, jsonify, send_from_directory
 import os
 import logging
+import time
 from logging.handlers import RotatingFileHandler
 import warnings
 
@@ -58,7 +59,7 @@ def api():
         noextname, ext = os.path.splitext(audio_file.filename)
         ext = ext.lower()
         # 如果是视频，先分离
-        wav_file = os.path.join(cfg.TMP_DIR, f'{noextname}.wav')
+        wav_file = os.path.join(cfg.TMP_DIR, f'{time.time()}.wav')
         print(f'{wav_file=}')
         if not os.path.exists(wav_file) or os.path.getsize(wav_file) == 0:
             if ext in ['.mp4', '.mov', '.avi', '.mkv', '.mpeg', '.mp3', '.flac']:
@@ -78,17 +79,18 @@ def api():
                 audio_file.save(wav_file)
             else:
                 return jsonify({"code": 1, "msg": f"不支持的格式 {ext}"})
-        print(f'{ext=}')
+        #print(f'{ext=}')
         sets = cfg.parse_ini()
         model = AutoModel(model="paraformer-zh", model_revision="v2.0.4",
                           vad_model="fsmn-vad", vad_model_revision="v2.0.4",
                           punc_model="ct-punc-c", punc_model_revision="v2.0.4",
+                          local_files_only=cfg.sets.get('only_local',False)
                           )
         res = model.generate(input=wav_file, return_raw_text=True, is_final=True,
                              sentence_timestamp=True, batch_size_s=100)
         raw_subtitles = []
         for it in res[0]['sentence_info']:
-            print(it)
+            #print(it)
             raw_subtitles.append({
                 "line": len(raw_subtitles) + 1,
                 "text": it['text'],

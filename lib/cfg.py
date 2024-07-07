@@ -13,7 +13,12 @@ def parse_ini():
             t = line.strip()
             if t  and not t.startswith(';') and t.find('=') > 0:
                 t = t.split('=', maxsplit=1)
-                sets[t[0]] = t[1]
+                if t[1]=='false':
+                    sets[t[0]]=False
+                elif t[1]=='true':
+                    sets[t[0]]=True
+                else:
+                    sets[t[0]] = t[1] if t[1] else ""
 
     return sets
 

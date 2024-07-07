@@ -1,2 +1,2 @@
-VERSION=1
-version_str="v0.0.1"
+VERSION=2
+version_str="v0.0.2"
