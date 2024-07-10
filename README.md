@@ -51,9 +51,13 @@ audio_file="D:/audio/1.wav"
 file={"audio":open(audio_file,'rb')}
 res=requests.post("http://127.0.0.1:9933/api",files=file,timeout=1800)
 
-print(res.data)
+print(res.json())
 
-[
+{
+
+code:0,
+msg:ok,
+data:[
 	{
 	 line:1,
 	 time:"00:00:01,100 --> 00:00:03,300",
@@ -65,7 +69,7 @@ print(res.data)
 	 text:"字幕内容2"
 	},
 ]
-
+}
 
 ```
 
